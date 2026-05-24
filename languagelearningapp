@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Language Learning App</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1>📚 Language Learning App</h1>
+
+<div class="container">
+
+<h2>Daily Lesson</h2>
+
+<div id="lesson"></div>
+
+<button onclick="nextLesson()">Next Lesson</button>
+
+<hr>
+
+<h2>Quiz</h2>
+
+<p id="question"></p>
+
+<input type="text" id="answer">
+
+<button onclick="checkAnswer()">Submit</button>
+
+<p id="result"></p>
+
+<hr>
+
+<h2>Progress</h2>
+
+<p>Score: <span id="score">0</span></p>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
