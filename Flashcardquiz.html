@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flashcard Quiz App</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body{
+      background:#f4f4f4;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:100vh;
+    }
+
+    .container{
+      width:400px;
+      background:white;
+      padding:25px;
+      border-radius:15px;
+      box-shadow:0 0 10px rgba(0,0,0,0.2);
+    }
+
+    h1{
+      text-align:center;
+      margin-bottom:20px;
+      color:#333;
+    }
+
+    .card{
+      background:#fafafa;
+      border:2px solid #ddd;
+      border-radius:10px;
+      padding:20px;
+      text-align:center;
+      margin-bottom:20px;
+    }
+
+    .question{
+      font-size:22px;
+      font-weight:bold;
+      margin-bottom:15px;
+    }
+
+    .answer{
+      font-size:18px;
+      color:green;
+      display:none;
+      margin-top:10px;
+    }
+
+    button{
+      padding:10px 15px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      margin:5px;
+      font-size:15px;
+    }
+
+    .show-btn{
+      background:#007bff;
+      color:white;
+    }
+
+    .nav-btn{
+      background:#28a745;
+      color:white;
+    }
+
+    .delete-btn{
+      background:red;
+      color:white;
+    }
+
+    .edit-btn{
+      background:orange;
+      color:white;
+    }
+
+    .form-group{
+      margin-top:15px;
+    }
+
+    input{
+      width:100%;
+      padding:10px;
+      margin-top:5px;
+      border:1px solid #ccc;
+      border-radius:8px;
+    }
+
+    .add-btn{
+      width:100%;
+      background:#6f42c1;
+      color:white;
+      margin-top:15px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>Flashcard Quiz App</h1>
+
+    <!-- Flashcard -->
+    <div class="card">
+
+      <div class="question" id="question">
+        What is HTML?
+      </div>
+
+      <button class="show-btn" onclick="showAnswer()">
+        Show Answer
+      </button>
+
+      <div class="answer" id="answer">
+        HTML is used to create web pages.
+      </div>
+
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div style="text-align:center;">
+      <button class="nav-btn" onclick="previousCard()">
+        Previous
+      </button>
+
+      <button class="nav-btn" onclick="nextCard()">
+        Next
+      </button>
+
+      <button class="edit-btn" onclick="editCard()">
+        Edit
+      </button>
+
+      <button class="delete-btn" onclick="deleteCard()">
+        Delete
+      </button>
+    </div>
+
+    <!-- Add Flashcard -->
+    <div class="form-group">
+      <label>Question</label>
+      <input type="text" id="newQuestion" placeholder="Enter question">
+    </div>
+
+    <div class="form-group">
+      <label>Answer</label>
+      <input type="text" id="newAnswer" placeholder="Enter answer">
+    </div>
+
+    <button class="add-btn" onclick="addCard()">
+      Add Flashcard
+    </button>
+
+  </div>
+
+  <script>
+
+    // Flashcards Array
+    let flashcards = [
+      {
+        question: "What is HTML?",
+        answer: "HTML is used to create web pages."
+      },
+      {
+        question: "What is CSS?",
+        answer: "CSS is used for styling web pages."
+      },
+      {
+        question: "What is JavaScript?",
+        answer: "JavaScript adds functionality to websites."
+      }
+    ];
+
+    let currentIndex = 0;
+
+    // Display Current Card
+    function displayCard() {
+
+      document.getElementById("question").innerText =
+        flashcards[currentIndex].question;
+
+      document.getElementById("answer").innerText =
+        flashcards[currentIndex].answer;
+
+      document.getElementById("answer").style.display = "none";
+    }
+
+    // Show Answer
+    function showAnswer() {
+      document.getElementById("answer").style.display = "block";
+    }
+
+    // Next Card
+    function nextCard() {
+
+      currentIndex++;
+
+      if(currentIndex >= flashcards.length){
+        currentIndex = 0;
+      }
+
+      displayCard();
+    }
+
+    // Previous Card
+    function previousCard() {
+
+      currentIndex--;
+
+      if(currentIndex < 0){
+        currentIndex = flashcards.length - 1;
+      }
+
+      displayCard();
+    }
+
+    // Add Flashcard
+    function addCard() {
+
+      let question =
+        document.getElementById("newQuestion").value;
+
+      let answer =
+        document.getElementById("newAnswer").value;
+
+      if(question === "" || answer === ""){
+        alert("Please enter question and answer");
+        return;
+      }
+
+      flashcards.push({
+        question: question,
+        answer: answer
+      });
+
+      document.getElementById("newQuestion").value = "";
+      document.getElementById("newAnswer").value = "";
+
+      alert("Flashcard Added Successfully!");
+    }
+
+    // Delete Flashcard
+    function deleteCard() {
+
+      if(flashcards.length === 1){
+        alert("Cannot delete last flashcard");
+        return;
+      }
+
+      flashcards.splice(currentIndex, 1);
+
+      currentIndex = 0;
+
+      displayCard();
+
+      alert("Flashcard Deleted");
+    }
+
+    // Edit Flashcard
+    function editCard() {
+
+      let newQuestion = prompt(
+        "Edit Question",
+        flashcards[currentIndex].question
+      );
+
+      let newAnswer = prompt(
+        "Edit Answer",
+        flashcards[currentIndex].answer
+      );
+
+      if(newQuestion && newAnswer){
+
+        flashcards[currentIndex].question = newQuestion;
+        flashcards[currentIndex].answer = newAnswer;
+
+        displayCard();
+
+        alert("Flashcard Updated");
+      }
+    }
+
+    // Initial Display
+    displayCard();
+
+  </script>
+
+</body>
+</html>
