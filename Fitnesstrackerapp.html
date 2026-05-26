@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Fitness Tracker App</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#f2f2f2;
+}
+
+.container{
+max-width:500px;
+margin:auto;
+padding:20px;
+}
+
+h1{
+text-align:center;
+background:#4CAF50;
+color:white;
+padding:15px;
+border-radius:10px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:10px;
+margin-top:20px;
+box-shadow:0 0 10px #ccc;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:1px solid #ddd;
+border-radius:8px;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:15px;
+background:#4CAF50;
+color:white;
+border:none;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#388E3C;
+}
+
+.summary{
+background:white;
+padding:20px;
+margin-top:20px;
+border-radius:10px;
+}
+
+.bar{
+height:25px;
+background:#ddd;
+border-radius:20px;
+overflow:hidden;
+}
+
+#progress{
+height:100%;
+width:0%;
+background:#4CAF50;
+}
+
+.activity{
+background:white;
+padding:15px;
+margin-top:15px;
+border-radius:10px;
+}
+
+.delete{
+background:red;
+margin-top:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🏃 Fitness Tracker</h1>
+
+<div class="card">
+
+<input
+id="exercise"
+type="text"
+placeholder="Exercise Type">
+
+<input
+id="time"
+type="number"
+placeholder="Workout Time (minutes)">
+
+<input
+id="calories"
+type="number"
+placeholder="Calories Burned">
+
+<button onclick="addActivity()">
+Add Activity
+</button>
+
+</div>
+
+<div class="summary">
+
+<h2>Daily Summary</h2>
+
+<p>
+Total Workouts:
+<span id="workouts">0</span>
+</p>
+
+<p>
+Total Time:
+<span id="minutes">0</span> min
+</p>
+
+<p>
+Total Calories:
+<span id="totalCalories">0</span>
+</p>
+
+<p>Goal Progress</p>
+
+<div class="bar">
+<div id="progress"></div>
+</div>
+
+</div>
+
+<div id="activities"></div>
+
+</div>
+
+<script>
+
+let fitnessData=
+JSON.parse(
+localStorage.getItem(
+"fitnessData"
+)
+)||[]
+
+display()
+
+function addActivity(){
+
+let exercise=
+document.getElementById(
+"exercise"
+).value
+
+let time=
+parseInt(
+document.getElementById(
+"time"
+).value
+)
+
+let calories=
+parseInt(
+document.getElementById(
+"calories"
+).value
+)
+
+if(
+exercise==""||
+isNaN(time)||
+isNaN(calories)
+){
+alert(
+"Fill all fields"
+)
+return
+}
+
+fitnessData.push({
+exercise,
+time,
+calories
+})
+
+save()
+
+document.getElementById(
+"exercise"
+).value=""
+
+document.getElementById(
+"time"
+).value=""
+
+document.getElementById(
+"calories"
+).value=""
+
+display()
+
+}
+
+function deleteItem(index){
+
+fitnessData.splice(
+index,
+1
+)
+
+save()
+
+display()
+
+}
+
+function save(){
+
+localStorage.setItem(
+"fitnessData",
+JSON.stringify(
+fitnessData
+)
+)
+
+}
+
+function display(){
+
+let area=
+document.getElementById(
+"activities"
+)
+
+area.innerHTML=""
+
+let totalTime=0
+let totalCalories=0
+
+fitnessData.forEach(
+(item,index)=>{
+
+totalTime+=item.time
+
+totalCalories+=
+item.calories
+
+area.innerHTML+=
+
+`
+<div class="activity">
+
+<h3>
+🏋 ${item.exercise}
+</h3>
+
+<p>
+⏱ ${item.time} min
+</p>
+
+<p>
+🔥 ${item.calories} kcal
+</p>
+
+<button
+class="delete"
+onclick="deleteItem(${index})">
+
+Delete
+
+</button>
+
+</div>
+`
+
+}
+)
+
+document.getElementById(
+"workouts"
+).innerText=
+fitnessData.length
+
+document.getElementById(
+"minutes"
+).innerText=
+totalTime
+
+document.getElementById(
+"totalCalories"
+).innerText=
+totalCalories
+
+let progress=
+(totalCalories/1000)*100
+
+if(progress>100){
+progress=100
+}
+
+document.getElementById(
+"progress"
+).style.width=
+progress+"%"
+
+}
+
+</script>
+
+</body>
+</html>
