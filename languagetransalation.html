@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Language Translation Tool</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+background:#eef2ff;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.container{
+
+width:90%;
+max-width:700px;
+
+background:white;
+
+padding:30px;
+
+border-radius:15px;
+
+box-shadow:0 0 20px rgba(0,0,0,0.2);
+
+}
+
+h1{
+text-align:center;
+color:#3f51b5;
+margin-bottom:20px;
+}
+
+textarea{
+
+width:100%;
+
+height:130px;
+
+padding:15px;
+
+font-size:16px;
+
+border:2px solid #ddd;
+
+border-radius:10px;
+
+resize:none;
+
+margin-bottom:15px;
+
+}
+
+.language-box{
+
+display:flex;
+
+gap:10px;
+
+margin-bottom:15px;
+
+}
+
+select{
+
+flex:1;
+
+padding:12px;
+
+border-radius:10px;
+
+font-size:16px;
+
+}
+
+button{
+
+padding:12px;
+
+border:none;
+
+border-radius:10px;
+
+background:#3f51b5;
+
+color:white;
+
+font-size:16px;
+
+cursor:pointer;
+
+}
+
+button:hover{
+
+background:#2b3a9c;
+
+}
+
+.actions{
+
+display:flex;
+
+gap:10px;
+
+margin-top:15px;
+
+}
+
+.translate-btn{
+
+width:100%;
+
+}
+
+.output-title{
+
+margin:15px 0;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🌍 Language Translator</h1>
+
+<label>Enter Text</label>
+
+<textarea
+id="inputText"
+placeholder="Type text here...">
+</textarea>
+
+<div class="language-box">
+
+<select id="source">
+
+<option value="auto">Detect Language</option>
+<option value="en">English</option>
+<option value="te">Telugu</option>
+<option value="hi">Hindi</option>
+<option value="ta">Tamil</option>
+<option value="fr">French</option>
+<option value="de">German</option>
+<option value="es">Spanish</option>
+
+</select>
+
+<select id="target">
+
+<option value="te">Telugu</option>
+<option value="en">English</option>
+<option value="hi">Hindi</option>
+<option value="ta">Tamil</option>
+<option value="fr">French</option>
+<option value="de">German</option>
+<option value="es">Spanish</option>
+
+</select>
+
+</div>
+
+<button
+class="translate-btn"
+onclick="translateText()">
+
+Translate
+
+</button>
+
+<h3 class="output-title">
+Translated Text
+</h3>
+
+<textarea
+id="outputText"
+readonly>
+</textarea>
+
+<div class="actions">
+
+<button onclick="copyText()">
+📋 Copy
+</button>
+
+<button onclick="speakText()">
+🔊 Speak
+</button>
+
+<button onclick="clearAll()">
+🗑 Clear
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+async function translateText(){
+
+let input=
+document
+.getElementById(
+"inputText"
+).value;
+
+let source=
+document
+.getElementById(
+"source"
+).value;
+
+let target=
+document
+.getElementById(
+"target"
+).value;
+
+if(input===""){
+
+alert(
+"Enter text first"
+);
+
+return;
+
+}
+
+try{
+
+let response=
+await fetch(
+"https://libretranslate.com/translate",
+{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":
+"application/json"
+
+},
+
+body:
+JSON.stringify({
+
+q:input,
+
+source:source,
+
+target:target,
+
+format:"text"
+
+})
+
+}
+
+);
+
+let data=
+await response.json();
+
+document
+.getElementById(
+"outputText"
+).value=
+data.translatedText;
+
+}
+
+catch{
+
+alert(
+"Translation failed"
+);
+
+}
+
+}
+
+function copyText(){
+
+let text=
+document
+.getElementById(
+"outputText"
+);
+
+navigator
+.clipboard
+.writeText(
+text.value
+);
+
+alert(
+"Copied"
+);
+
+}
+
+function speakText(){
+
+let output=
+document
+.getElementById(
+"outputText"
+).value;
+
+if(output===""){
+
+alert(
+"Translate first"
+);
+
+return;
+
+}
+
+let speech=
+new SpeechSynthesisUtterance(
+output
+);
+
+speech.lang=
+document
+.getElementById(
+"target"
+).value;
+
+window
+.speechSynthesis
+.speak(
+speech
+);
+
+}
+
+function clearAll(){
+
+document
+.getElementById(
+"inputText"
+).value="";
+
+document
+.getElementById(
+"outputText"
+).value="";
+
+}
+
+</script>
+
+</body>
+</html>
